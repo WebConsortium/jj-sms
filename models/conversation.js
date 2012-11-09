@@ -1,8 +1,8 @@
 module.exports = function(mongoose) {
-	var Schema = mongoose.Schema,
+  var Schema = mongoose.Schema,
       user   = mongoose.model("user"); 
 
- 	var conversationSchema = new Schema({
+  var conversationSchema = new Schema({
     from     : { type : Schema.ObjectId, ref: "user" },
     to       : { type : Schema.ObjectId, ref: "user" },
     messages : [{
