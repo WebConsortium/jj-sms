@@ -1,8 +1,8 @@
 module.exports = function(app, express)
 {
-	var config = this;
+  var config = this;
 
-	app.configure(function(){
+  app.configure(function(){
     app.set('port', process.env.PORT || 3000);
     app.set('../views', __dirname + '/views');
     app.set('view engine', 'jade');
@@ -19,5 +19,5 @@ module.exports = function(app, express)
     app.mongoose.connect('mongodb://localhost/nodesms');
   });
 
-	return config;
+  return config;
 };
