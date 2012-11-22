@@ -1,7 +1,8 @@
 module.exports = function(app, express)
 {
   var config = this;
-
+  var mongoose = require('mongoose');
+  
   app.configure(function(){
     app.set('port', process.env.PORT || 3000);
     app.set('../views', __dirname + '/views');
@@ -14,9 +15,18 @@ module.exports = function(app, express)
     app.use(express.static(__dirname + '/public'));
   });
 
-  app.configure('development', function(){
+  app.configure('test', function(){
+    
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-    app.mongoose.connect('mongodb://localhost/nodesms');
+    mongoose.connect('mongodb://localhost/nodesms_test');
+  
+  });
+
+  app.configure('dev', function(){
+    
+    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+    mongoose.connect('mongodb://localhost/nodesms');
+  
   });
 
   return config;
