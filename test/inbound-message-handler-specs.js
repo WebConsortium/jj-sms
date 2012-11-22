@@ -12,7 +12,14 @@ describe("inbound-message-handler", function(){
   // default site user
   describe("when a message from a new user is received", function() {
 
+    var request = { 
+      from : "111-111-1111", 
+      body : "this is a test message",
+      to   : "555-555-5555"
+    };
+
     beforeEach(function(done){
+
       var defaultUser = new user.model({
         name: "default user",
         phone_number: "555-555-5555"    
@@ -20,13 +27,6 @@ describe("inbound-message-handler", function(){
 
       defaultUser.save(done);
     });
-
-
-    var request = { 
-      from : "111-111-1111", 
-      body : "this is a test message",
-      to   : "555-555-5555"
-    };
 
     it("creates a new user", function(done) {
       sut.execute(request, function() {

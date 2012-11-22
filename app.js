@@ -9,9 +9,6 @@ var config = require('./core/config.js')(app, express);
 // Begin Routes
 // ------------
 
-// user 
-app.get('/user/list', require('./controllers/user_controller').list);
-
 // message
 app.post('/message/inbound', require('./controllers/message_controller').inbound)
 

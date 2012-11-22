@@ -10,18 +10,14 @@ var MessageController = function()
       message: req.body.Body
     };
 
-    messageReceivedHandler.on("sucess", function(data){
+    messageReceivedHandler.execute(request, function(data){
       res.send(data);
     });
-
-    messageReceivedHandler.execute(request);
-  
   };
 
   return {
     inbound: _inbound
   };
-
 }();
 
 module.exports = MessageController;
