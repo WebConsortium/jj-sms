@@ -5,6 +5,7 @@ var MessageReceivedHandler = function()
       user = require("../../models/user"),
       findOwner,
       findConversation,
+      appendToConversation,
       createConversation,
       execute;
 
@@ -54,7 +55,7 @@ var MessageReceivedHandler = function()
     });
   };
 
-  var _execute = function(message, success) {
+  var execute = function(message, success) {
     var obj = {},
         afterOwnerFound, 
         afterMessageAppended, 
@@ -72,7 +73,7 @@ var MessageReceivedHandler = function()
   };
 
   return {
-    execute: _execute
+    execute: execute
   }
 }();
 
