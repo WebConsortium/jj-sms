@@ -4,7 +4,7 @@ var MessageReceivedHandler = function()
       conversation = require("../../models/conversation"),
       user = require("../../models/user"),
       findOwner,
-      findConversationWithUser,
+      findConversation,
       createConversation,
       execute;
 
@@ -15,32 +15,35 @@ var MessageReceivedHandler = function()
     });
   };
 
-  findConversationWithUser = function(message, obj, next){
+  findConversation = function(message, obj, next) {
+    conversation.findConversation(obj.owner._id, message.from, function(result){
+      if(result) {
+        return appendToConversation(message, obj, result, next);
+      }
+      return createConversation(message, obj, next)
+    });     
+  };
 
-    user.findByPhoneNumber(message.from, function(conversationWith){
-      if(conversationWith){
+  appendToConversation = function(message, obj, model, next){
+    model.messages.addToSet({
+      to : message.to,
+      from: message.from,
+      body: message.body
+    });
 
-        obj.conversationWith = conversationWith;
-        return next(message, obj);
-      }    
-
-      var conversationWith = new user.model({ phone_number : message.from });
-
-      conversationWith.save(function(e){
-        obj.conversationWith = conversationWith;
-        return next(message, obj);
-      });
-    
+    model.save(function(e) {
+      obj.conversation = model;
+      return next(message, obj);
     });
   };
 
   createConversation = function(message, obj, next){
     var model = new conversation.model({
       owner : obj.owner._id,
-      conversationWith : obj.conversationWith._id,
+      conversationWith : message.from,
       messages : [{
         to: obj.owner.phone_number,
-        from: obj.conversationWith.phone_number,
+        from: message.from,
         body: message.body
       }]
     });
@@ -54,18 +57,14 @@ var MessageReceivedHandler = function()
   var _execute = function(message, success) {
     var obj = {},
         afterOwnerFound, 
-        afterWithFound,
-        afterConversationCreated,
+        afterMessageAppended, 
+        afterConversationSaved;
 
     afterOwnerFound = function(message, obj) { 
-      return findConversationWithUser(message, obj, afterWithFound) 
+      return findConversation(message, obj, afterConversationSaved) 
     };
 
-    afterWithFound = function(message, obj) {
-      return createConversation(message, obj, afterConversationCreated);
-    }
-
-    afterConversationCreated = function(message, obj){
+    afterConversationSaved = function(message, obj){
       return success(obj);
     }
 
@@ -73,10 +72,8 @@ var MessageReceivedHandler = function()
   };
 
   return {
-
     execute: _execute
   }
-
 }();
 
 module.exports = MessageReceivedHandler;

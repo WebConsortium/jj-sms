@@ -8,7 +8,7 @@ var Conversation = function()
   
   conversationSchema = new Schema({
     owner            : { type : Schema.ObjectId, ref: "user" },
-    conversationWith : { type : Schema.ObjectId, ref: "user" },
+    conversationWith : String,
     messages : [{
         to        : String,
         from      : String,
@@ -22,13 +22,13 @@ var Conversation = function()
   model = mongoose.model("conversation", conversationSchema);
 
   //queries 
-  findConversation = function(ownerId, conversationWithId, callback){
+  findConversation = function(ownerId, conversationWithNumber, callback){
     
     model
-    .findOne({"owner" : ownerId, "conversationWith" : conversationWithId})
-    .exec(function (error, conversation) {
-      callback(conversation);
-    });
+      .findOne({"owner" : ownerId, "conversationWith" : conversationWithNumber})
+      .exec(function (error, conversation) {
+        callback(conversation);
+      });
   }
 
   return {
