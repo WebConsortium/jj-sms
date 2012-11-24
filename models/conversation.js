@@ -1,11 +1,8 @@
-var Conversation = function()
+module.exports = function(mongoose)
 {
-  var mongoose = require("mongoose");
   var Schema = mongoose.Schema,
-      conversationSchema,
-      model,
-      findConversation;
-  
+      conversationSchema;
+     
   conversationSchema = new Schema({
     owner            : { type : Schema.ObjectId, ref: "user" },
     conversationWith : String,
@@ -13,18 +10,19 @@ var Conversation = function()
         to        : String,
         from      : String,
         body      : String,
+        status    : String,
         timeStamp : { 
           type    : Date, 
           default : Date.now }
       }]
   });
 
-  model = mongoose.model("conversation", conversationSchema);
+  this.model = mongoose.model("conversation", conversationSchema);
 
   //queries 
-  findConversation = function(ownerId, conversationWithNumber, callback){
+  this.findConversation = function(ownerId, conversationWithNumber, callback){
     
-    model
+    this.model
       .findOne({"owner" : ownerId, "conversationWith" : conversationWithNumber})
       .exec(function (error, conversation) {
         callback(conversation);
@@ -32,11 +30,8 @@ var Conversation = function()
   }
 
   return {
-    model: model,
-    findConversation : findConversation
+    model: this.model,
+    findConversation : this.findConversation
   };
-
-}();
-
-module.exports = Conversation;
+};
 

@@ -1,7 +1,5 @@
-var MessageController = function()
+module.exports = function(handler)
 {
-  var messageReceivedHandler = require("../api/conversation/inbound-message-handler");
-
   var _inbound = function(req, res) {
      
     var request = {
@@ -10,7 +8,7 @@ var MessageController = function()
       message: req.body.Body
     };
 
-    messageReceivedHandler.execute(request, function(data){
+    handler.execute(request, function(data){
       res.send(data);
     });
   };
@@ -18,6 +16,4 @@ var MessageController = function()
   return {
     inbound: _inbound
   };
-}();
-
-module.exports = MessageController;
+};
