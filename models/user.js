@@ -1,13 +1,26 @@
-module.exports = function(mongoose) {
+module.exports = function (mongoose) {
 
-  var Schema = mongoose.Schema;
+  var Schema = mongoose.Schema,
+      userSchema,
+      model,
+      findByPhoneNumber;
 
-  var userSchema = new Schema({
+  userSchema = new Schema({
     name : String,
     phone_number  : String
   });
 
-  this.model = mongoose.model("user", userSchema);
-  
-  return this;
+  model = mongoose.model("user", userSchema);
+
+  // queries
+  findByPhoneNumber = function(phoneNumber, callback) {
+    model.findOne({phone_number : phoneNumber}, function(error, user) {
+      callback(user);
+    });
+  };
+
+  return {
+    model: model,
+    findByPhoneNumber : findByPhoneNumber
+  };
 };
